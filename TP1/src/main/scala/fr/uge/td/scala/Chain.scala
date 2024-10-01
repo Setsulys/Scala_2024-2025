@@ -5,17 +5,22 @@ sealed trait List[+A]
 case object Nil extends List[Nothing]
 case class Cons[+A](head: A, tail: List[A]) extends List[A]
 
-def tail[A](list:List[A]):List[A]={
-  list match{
-    case Nil => Nil
-    case Cons(head,tail)=> tail
-  }
-}
 
 object Chain {
+  def tail[A](list:List[A]):List[A]={
+    list match{
+      case Nil => Nil
+      case Cons(head,tail)=> tail
+    }
+  }
+
+  def prepend[A] (list: List[A],a: A): List[A] = Cons(a,list)
+
   def main(args: Array[String]): Unit = {
     val chained = Cons(1,Cons(2,Cons(3,Nil)));
     println(s"${tail(chained)}")
+    prepend(chained,0);
+    println(s" ${chained}")
   }
 }
 
