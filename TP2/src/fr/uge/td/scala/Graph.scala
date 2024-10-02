@@ -1,4 +1,6 @@
-package fr.uge.td.scala;
+package fr.uge.td.scala
+
+import scala.annotation.tailrec;
 
 object Graph{
   val graph = List((1,0,5),(5,1,8),(8,2,1),(2,0,6),(3,0,6),(6,1,9),(5,1,9),(9,3,11),(9,4,12),(4,0,7),(7,1,9),(7,2,10),
@@ -40,15 +42,14 @@ object Graph{
 
   def rootedGraph(root : Int):List[(Int,Int)]={
     val removedArc = removeArc(graph);
-    if(!rootNode(removedArc).contains(root)){
-      List[(Int,Int)]()
-    }
+    if(!rootNode(removedArc).contains(root)) List[(Int,Int)]()
     val pair1 = removedArc.filter{case(x,_)=> x==root };
     join(pair1,removedArc).filter(x=> x._1 ==root)
   }
 
   def joinv2(pair1 : List[(Int,Int)], pair2 : List[(Int,Int)]): List[(Int,Int)] ={
-      def joinRecursive(current: List[(Int,Int)],previous : List[(Int,Int)]) : List[(Int,Int)]={
+      @tailrec
+      def joinRecursive(current: List[(Int,Int)], previous : List[(Int,Int)]) : List[(Int,Int)]={
         if(current.length==previous.length) current
         else joinRecursive((current.flatMap{case (x, y) => pair2.map { case (a, b) => if (a == y) (x, b) else (0, 0)}.filterNot(_ == (0, 0))}:++pair2:++pair1).distinct,current)
       }
