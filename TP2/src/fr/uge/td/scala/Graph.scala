@@ -47,6 +47,7 @@ object Graph{
     join(pair1,removedArc).filter(x=> x._1 ==root)
   }
 
+
   def joinv2(pair1 : List[(Int,Int)], pair2 : List[(Int,Int)]): List[(Int,Int)] ={
       @tailrec
       def joinRecursive(current: List[(Int,Int)], previous : List[(Int,Int)]) : List[(Int,Int)]={
@@ -54,6 +55,12 @@ object Graph{
         else joinRecursive((current.flatMap{case (x, y) => pair2.map { case (a, b) => if (a == y) (x, b) else (0, 0)}.filterNot(_ == (0, 0))}:++pair2:++pair1).distinct,current)
       }
     joinRecursive(pair1,List.empty)
+  }
+
+  def transitiveClosure(graph : List[(Int,Int,Int)]):List[(Int,Int)]={
+    val pairs = removeArc(graph)
+    inferpair(pairs,pairs)
+    //joinv2(pairs,pairs)
   }
 
   def main(args: Array[String]): Unit = {
@@ -72,5 +79,7 @@ object Graph{
     println(s"${rootGraph}")
     val joined2 = joinv2(half,half2)
     println(s"${joined2}")
+    val transitive = transitiveClosure(graph)
+    println(s"${transitive}")
   }
 }
