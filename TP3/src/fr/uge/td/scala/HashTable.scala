@@ -1,5 +1,6 @@
 package fr.uge.td.scala
 import java.io.RandomAccessFile
+import java.nio.file.{Files, Paths, StandardCopyOption}
 class HashTable(val fileBdd :String,val offset : Int,val threshold: Double){
   var hashMap = Map[String,Int]()
   private val fileReader = new RandomAccessFile(fileBdd,"rw")
@@ -22,6 +23,7 @@ class HashTable(val fileBdd :String,val offset : Int,val threshold: Double){
       addIndex+= offset
     })
     val resBuffer = str.getBytes
+    //Files.copy(Paths.get(fileBdd),Paths.get("log_segment"),StandardCopyOption.REPLACE_EXISTING)
     fileReader.setLength(0)
     fileReader.write(resBuffer,0,resBuffer.length)
   }
