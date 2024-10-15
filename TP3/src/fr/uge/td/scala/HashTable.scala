@@ -46,9 +46,7 @@ class HashTable(val offset : Int,val threshold: Double){
 
   def checkThresHold(): Unit = {
     if(hashMap.nonEmpty) {
-      println(s"${(hashMap.size.toDouble*offset / addIndex.toDouble) }")
       if((hashMap.size.toDouble*offset / addIndex.toDouble) < threshold){
-        println("hey")
         overrideFile()
       }
     }
