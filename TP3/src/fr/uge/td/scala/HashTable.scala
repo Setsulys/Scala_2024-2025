@@ -10,11 +10,11 @@ class HashTable(val offset : Int,val threshold: Double){
   var addIndex= 0
 
 
-  def closeFile()={
+  def closeFile():Unit={
     fileReader.close()
   }
 
-  def overrideFile()={
+  private def overrideFile():Unit={
     var str :String = ""
     val buffer = new Array[Byte](offset)
     addIndex=0
@@ -44,7 +44,7 @@ class HashTable(val offset : Int,val threshold: Double){
     else None
   }
 
-  def checkThresHold(): Unit = {
+  private def checkThresHold(): Unit = {
     if(hashMap.nonEmpty) {
       if((hashMap.size.toDouble*offset / addIndex.toDouble) < threshold){
         overrideFile()
