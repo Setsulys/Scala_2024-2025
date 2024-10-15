@@ -1,9 +1,12 @@
 package fr.uge.td.scala
 import java.io.RandomAccessFile
 import java.nio.file.{Files, Paths, StandardCopyOption}
-class HashTable(val fileBdd :String,val offset : Int,val threshold: Double){
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+class HashTable(val offset : Int,val threshold: Double){
+  val currentFile = "current_log"
   var hashMap = Map[String,Int]()
-  private val fileReader = new RandomAccessFile(fileBdd,"rw")
+  private val fileReader = new RandomAccessFile(currentFile,"rw")
   var addIndex= 0
 
 
@@ -23,7 +26,9 @@ class HashTable(val fileBdd :String,val offset : Int,val threshold: Double){
       addIndex+= offset
     })
     val resBuffer = str.getBytes
-    //Files.copy(Paths.get(fileBdd),Paths.get("log_segment"),StandardCopyOption.REPLACE_EXISTING)
+
+    val fileTitle : String = "log_segment_"+DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss").format(LocalDateTime.now)
+    Files.copy(Paths.get(currentFile),Paths.get(fileTitle),StandardCopyOption.REPLACE_EXISTING)
     fileReader.setLength(0)
     fileReader.write(resBuffer,0,resBuffer.length)
   }
@@ -34,7 +39,7 @@ class HashTable(val fileBdd :String,val offset : Int,val threshold: Double){
       val buffer = new Array[Byte](offset)
       fileReader.seek(value.get)
       fileReader.read(buffer)
-      Some(new String(buffer).replaceAll("\\*", "").split(":")(1).toInt)
+      Some(new String(buffer).replaceAll("\\*", "").toInt)
     }
     else None
   }
@@ -51,15 +56,14 @@ class HashTable(val fileBdd :String,val offset : Int,val threshold: Double){
   }
 
   def add(key:String, value:Int): Unit={
-    checkThresHold()
-    val keyValue : String = key+":"+ value
+    val keyValue : String= value.toString
     val nbStar = offset - keyValue.length
     val res = keyValue:++"*"*nbStar
     hashMap = hashMap + (key-> addIndex)
     addIndex+=offset
     fileReader.seek(fileReader.length)
     fileReader.write(res.getBytes())
-
+    checkThresHold()
   }
 
 
@@ -70,7 +74,7 @@ class HashTable(val fileBdd :String,val offset : Int,val threshold: Double){
 
 object HashTable{
   def main(args: Array[String]): Unit = {
-    val hash: HashTable = new HashTable("txt.txt",20,0.4)
+    val hash: HashTable = new HashTable(20,0.4)
     hash.add("abc",777)
     hash.add("def",541)
     hash.add("def",542)
