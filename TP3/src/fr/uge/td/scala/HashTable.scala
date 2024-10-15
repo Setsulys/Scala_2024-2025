@@ -8,6 +8,7 @@ class HashTable(val offset : Int,val threshold: Double){
   var hashMap = Map[String,Int]()
   private val fileReader = new RandomAccessFile(currentFile,"rw")
   var addIndex= 0
+  var occurence = 1
 
 
   def closeFile():Unit={
@@ -15,17 +16,17 @@ class HashTable(val offset : Int,val threshold: Double){
   }
 
   def checkFileExist(fileTitle : String): String = {
-    var occurence =1
     if(Files.exists(Paths.get(fileTitle))){
       var tempFileTitle = fileTitle
-      do{
-        tempFileTitle =fileTitle
-        tempFileTitle+="("+occurence+")"
-        occurence+=1
-      }while(Files.exists(Paths.get(tempFileTitle)))
-     tempFileTitle
+      tempFileTitle+="("+occurence+")"
+      occurence+=1
+      tempFileTitle
     }
-    else fileTitle
+    else {
+      occurence = 1
+      fileTitle
+
+    }
   }
 
   private def overrideFile():Unit={
