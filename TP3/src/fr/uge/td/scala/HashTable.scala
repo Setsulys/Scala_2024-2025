@@ -14,8 +14,25 @@ class HashTable(val offset : Int,val threshold: Double){
     fileReader.close()
   }
 
+  def checkFileExist(fileTitle : String): String = {
+    var occurence =1
+    if(Files.exists(Paths.get(fileTitle))){
+      var tempFileTitle = fileTitle
+      do{
+        tempFileTitle =fileTitle
+        tempFileTitle+="("+occurence+")"
+        occurence+=1
+      }while(Files.exists(Paths.get(tempFileTitle)))
+     tempFileTitle
+    }
+    else fileTitle
+  }
+
   private def overrideFile():Unit={
     var str :String = ""
+    var fileTitle : String = "log_segment_"+DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss").format(LocalDateTime.now)
+    fileTitle = checkFileExist(fileTitle)
+    Files.copy(Paths.get(currentFile),Paths.get(fileTitle),StandardCopyOption.REPLACE_EXISTING)
     val buffer = new Array[Byte](offset)
     addIndex=0
     hashMap.foreach(e=> {
@@ -26,9 +43,6 @@ class HashTable(val offset : Int,val threshold: Double){
       addIndex+= offset
     })
     val resBuffer = str.getBytes
-
-    val fileTitle : String = "log_segment_"+DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss").format(LocalDateTime.now)
-    Files.copy(Paths.get(currentFile),Paths.get(fileTitle),StandardCopyOption.REPLACE_EXISTING)
     fileReader.setLength(0)
     fileReader.write(resBuffer,0,resBuffer.length)
   }
@@ -73,21 +87,29 @@ class HashTable(val offset : Int,val threshold: Double){
 object HashTable{
   def main(args: Array[String]): Unit = {
     val hash: HashTable = new HashTable(20,0.4)
-    hash.add("abc",777)
-    hash.add("def",541)
-    hash.add("def",542)
-    hash.add("def",543)
-    hash.add("def",544)
-    hash.add("def",545)
-    hash.add("def",546)
-    hash.add("abc",771)
-    hash.add("abc",772)
-    hash.add("abc",773)
-    hash.add("abc",774)
+    hash.add("abc",100)
+    hash.add("def",1)
+    hash.add("def",2)
+    hash.add("def",3)
+    hash.add("def",4)
+    hash.add("def",5)
+    hash.add("def",6)
+    hash.add("abc",200)
+    hash.add("abc",300)
+    hash.add("abc",400)
+    hash.add("abc",500)
+    hash.add("def",9)
+    hash.add("def",10)
+    hash.add("def",11)
+    hash.add("def",12)
+    hash.add("def",13)
+    hash.add("def",14)
 
 
     val res = hash.get("def")
     println(s"${res}")
+    val ref = hash.get("abc")
+    println(s"${ref}")
     println(s"${hash.hashMap}")
     hash.closeFile()
   }
