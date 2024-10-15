@@ -16,7 +16,7 @@ class HashTable(val offset : Int,val threshold: Double){
 
   def overrideFile()={
     var str :String = ""
-    var buffer = new Array[Byte](offset)
+    val buffer = new Array[Byte](offset)
     addIndex=0
     hashMap.foreach(e=> {
       fileReader.seek(e._2)
